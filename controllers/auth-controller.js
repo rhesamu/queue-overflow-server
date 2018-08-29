@@ -3,6 +3,8 @@ const User = require('../models/User')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const axios = require('axios')
+const CronJob = require('cron').CronJob
+const nodemailer = require('nodemailer')
 
 const login = function(req, res) {
   const { email, password } = req.body
@@ -85,9 +87,37 @@ const register = function(req, res) {
     password: hash
   })
   .then(user => {
-    res.status(201).json({
-      msg: 'User registered',
-      user
+    let transporter = nodemailer.createTransport({
+      host: 'smtp@gmail.com',
+      port: 465,
+      secure: true,
+      auth: {
+        user: 'rsvp.hacktiv8@gmail.com', // generated ethereal user
+        pass: 'r$vp.hacktiv8' // generated ethereal password
+      }
+    })
+
+    let mailOptions = {
+      from:'"Queue Overflow"',
+      to: user.email,
+      subject: 'Register successful!',
+      html: `<b> Thank you ${user.name},<br>
+             you have been registered to Queue Overflow!<br><br>
+            </b>`
+    }
+
+    transporter.sendMail(mailOptions, function(error, info) {
+      if (error) {
+        return res.status(400).json({
+          msg: 'Fail to send email',
+          error
+        })
+      } else {
+        res.status(201).json({
+          msg: 'User registered',
+          user
+        })
+      }
     })
   })
   .catch(err => {
