@@ -41,9 +41,10 @@ const update = function(req, res) {
 }
 
 const getAll = function(req, res) {
-  const { questionId } = req.body
+  const { questionId } = req.params
 
   Answer.find({ questionId })
+  .sort({ createdAt: 'descending' })
   .populate('userId', 'name')
   .then(answers => {
     res.status(200).json(answers)

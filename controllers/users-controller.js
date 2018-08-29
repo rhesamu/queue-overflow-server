@@ -1,7 +1,7 @@
 const User = require('../models/User')
 
 const getUserInfo = function(req, res) {
-  const userId = req.params.userId
+  const userId = req.user.userId
   User.findById(userId)
   .then(user => {
     res.status(200).json(user)

@@ -5,9 +5,12 @@ const { isAuthenticated } = require('../middleware/auth')
 
 router
   .route('/')
-  .get(getAll)
   .post(isAuthenticated, create)
 
+router
+  .route('/:questionId')
+  .get(getAll)
+    
 router
   .route('/:answerId')
   .put(isAuthenticated, update)

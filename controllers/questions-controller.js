@@ -7,6 +7,7 @@ const getAll = function(req, res) {
   if (req.query.search) inputData.search = req.query.search
 
   Question.find(inputData)
+  .sort({ createdAt: 'descending' })
   .populate('userId', 'name')
   .then(questions => {
     console.log(questions)
@@ -22,7 +23,7 @@ const getAll = function(req, res) {
 }
 
 const getById = function(req, res) {
-  Question.findById({ _id: req.body.questionId })
+  Question.findById({ _id: req.params.questionId })
   .populate('userId', 'name')
   .then(question => {
     res.status(200).json(question)
